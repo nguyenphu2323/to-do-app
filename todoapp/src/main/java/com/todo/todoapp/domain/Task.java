@@ -26,6 +26,9 @@ public class Task {
         this.status = status;
     }
 
+    public Task() {
+    }
+
     public long getId() {
         return id;
     }
