@@ -16,11 +16,11 @@
         <div class="mt-5">
             <div class="row">
                 <div class="col-md-6 col-12 mx-auto">
-                    <h3>Create a task</h3>
+                    <h2 th:text="'Update task with id = ' + ${id}"></h2>
                     <hr />
-                    <form th:action="@{/task/create}" th:object="${newTask}" method="post">
+                    <form th:action="@{/task/update}" th:object="${newTask}" method="post">
+                        <input type="hidden" name="id" th:value="${id}" />
                         <div class="mb-3 col-12 ">
-
                             <label class="form-label">Title:</label>
                             <input type="text" class="form-control" th:field="*{title}"
                                 th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''" />
@@ -29,12 +29,19 @@
                         </div>
                         <div class="mb-3 col-12">
                             <label class="form-label">Description:</label>
-                            <input type="text" class="form-control" th:field="*{description}"
+                            <input type="text" class="form-control" path="address" th:field="*{description}"
                                 th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''" />
-
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
                                 th:errors="*{description}">
                                 Title Error</div>
+                        </div>
+                        <div class="mb-3 col-12">
+                            <label class="form-label">Status:</label>
+                            <select name="" id="" th:field="*{status}">
+                                <option th:value="'TODO'">To Do</option>
+                                <option th:value="'IN_PROGRESS'">In Progress</option>
+                                <option th:value="'DONE'">Done</option>
+                            </select>
                         </div>
                         <div class="mb-3 col-12">
                             <label class="form-label">Priority:</label>
@@ -45,7 +52,7 @@
                             </select>
                         </div>
                         <div class="col-12 mb-5">
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                     </form>
 

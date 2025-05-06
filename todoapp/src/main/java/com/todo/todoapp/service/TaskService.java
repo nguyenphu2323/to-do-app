@@ -26,4 +26,8 @@ public class TaskService {
     public Task deleteTaskById(long id) {
         return this.taskRepository.deleteById(id);
     }
+
+    public Task getTaskById(long id) {
+        return this.taskRepository.findById(id);
+    }
 }

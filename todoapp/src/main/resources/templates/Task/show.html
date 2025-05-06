@@ -9,11 +9,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+<style>
+    .badge-status {
+        padding: 4px 10px;
+        border-radius: 2px;
+        font-weight: 500;
+        display: inline-block;
+        min-width: 60px;
+        text-align: center;
+    }
+
+    .TODO {
+        border: 1px solid #ccc;
+        color: #ccc;
+    }
+
+    .IN_PROGRESS {
+        border: 1px solid #f5c542;
+        color: #856404;
+    }
+
+    .DONE {
+        border: 1px solid #198754;
+        color: #198754;
+    }
+</style>
 
 <body>
     <div class="container">
         <h2>TODO List Demo App </h2>
-        <p>Do it now.</p>
+        <div class="bg-warning-subtle " style="display: inline-block;">
+            <p class="m-0">Do it now.</p>
+        </div>
+
+
+
 
         <div class="d-flex justify-content-end">
             <a href="/task/create" class="btn btn-outline-info">Add task</a>
@@ -35,8 +65,14 @@
 
                     <th scope="row" th:text="${tasks.id}"></th>
                     <td th:text="${tasks.title}"></td>
-                    <td class="" th:text="${tasks.status}"></td>
-                    <td><button type="button" class="btn btn-outline-info"><i class="fa-solid fa-pen"></i></button></td>
+                    <td>
+                        <span th:text="${tasks.status}" th:class="' badge-status ' + ${tasks.status}">
+                        </span>
+                    </td>
+
+
+                    <td><a th:href="@{/task/update/{id}(id=${tasks.id})}" class="btn btn-outline-info"><i
+                                class="fa-solid fa-pen"></i></a></td>
                     <td>
                         <a th:href="@{/task/delete/{id}(id=${tasks.id})}" class="btn btn-outline-secondary">
                             <i class="fa-solid fa-trash"></i>

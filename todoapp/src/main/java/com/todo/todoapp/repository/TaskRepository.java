@@ -8,4 +8,6 @@ import com.todo.todoapp.domain.Task;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Task deleteById(long id);
+
+    Task findById(long id);
 }
