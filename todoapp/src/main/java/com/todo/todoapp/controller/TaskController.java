@@ -1,7 +1,11 @@
 package com.todo.todoapp.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,10 +32,23 @@ public class TaskController {
     }
 
     @GetMapping("/task")
-    public String getTaskPage(Model model) {
+    public String getTaskPage(Model model, @RequestParam("page") Optional<String> pageOptional) {
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                page = Integer.parseInt(pageOptional.get());
+            } else {
 
-        List<Task> tasks = this.taskService.getAllTasks();
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        Pageable pageable = PageRequest.of(page - 1, 4);
+        Page<Task> pageTask = this.taskService.getAllTasks(pageable);
+        List<Task> tasks = pageTask.getContent();
         model.addAttribute("tasks", tasks);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", pageTask.getTotalPages());
         return "Task/show";
     }
 

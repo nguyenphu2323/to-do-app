@@ -2,6 +2,8 @@ package com.todo.todoapp.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.todo.todoapp.domain.Task;
@@ -15,8 +17,8 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public List<Task> getAllTasks() {
-        return this.taskRepository.findAll();
+    public Page<Task> getAllTasks(Pageable pageable) {
+        return this.taskRepository.findAll(pageable);
     }
 
     public Task handleSaveTasks(Task task) {
