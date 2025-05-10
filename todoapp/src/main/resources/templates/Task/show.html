@@ -37,120 +37,98 @@
 
 <body>
     <div class="container">
-        <h2>TODO List Demo App </h2>
-        <div class="bg-warning-subtle " style="display: inline-block;">
+        <h2>TODO List Demo App</h2>
+        <div class="bg-warning-subtle" style="display: inline-block;">
             <p class="m-0">Do it now.</p>
         </div>
-
-
-
-
         <div class="d-flex justify-content-end">
-            <a href="/task/create" class="btn btn-outline-info">Add task</a>
+            <a th:href="@{/task/create}" class="btn btn-outline-info">Add task</a>
         </div>
-
-
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Task Name</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Create Date</th>
                     <th scope="col">Edit</th>
                     <th scope="col">Remove</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="tasks : ${tasks}">
-
                     <th scope="row" th:text="${tasks.id}"></th>
                     <td th:text="${tasks.title}"></td>
                     <td>
-                        <span th:text="${tasks.status}" th:class="' badge-status ' + ${tasks.status}">
-                        </span>
+                        <span th:text="${tasks.status}" th:class="'badge-status ' + ${tasks.status}"></span>
                     </td>
-
-
-                    <td><a th:href="@{/task/update/{id}(id=${tasks.id})}" class="btn btn-outline-info"><i
-                                class="fa-solid fa-pen"></i></a></td>
+                    <td th:text="${tasks.createdDate}"></td>
+                    <td>
+                        <a th:href="@{/task/update/{id}(id=${tasks.id})}" class="btn btn-outline-info">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                    </td>
                     <td>
                         <a th:href="@{/task/delete/{id}(id=${tasks.id})}" class="btn btn-outline-secondary">
                             <i class="fa-solid fa-trash"></i>
                         </a>
                     </td>
-
-
                 </tr>
-
-
             </tbody>
         </table>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item">
                     <a th:class="${1 eq currentPage ? 'disabled page-link' : 'page-link'}"
-                        th:href="'/task?page=' + ${currentPage - 1}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
+                        th:href="@{/task(page=${currentPage - 1})} + ${queryString}" aria-label="Previous">
+                        <span aria-hidden="true">«</span>
                     </a>
                 </li>
                 <li th:each="pageItem, loop : ${#numbers.sequence(1, totalPages)}">
-                    <a th:href="@{'/task'(page=${loop.index + 1})}"
+                    <a th:href="@{/task(page=${loop.index + 1})} + ${queryString}"
                         th:class="${currentPage == loop.index + 1} ? 'active page-link' : 'page-link'"
                         th:text="${loop.index + 1}"></a>
                 </li>
-
-
-
-
                 <li class="page-item">
                     <a th:class="${totalPages eq currentPage ? 'disabled page-link' : 'page-link'}"
-                        th:href="'/task?page=' + ${currentPage + 1}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
+                        th:href="@{/task(page=${currentPage + 1})} + ${queryString}" aria-label="Next">
+                        <span aria-hidden="true">»</span>
                     </a>
                 </li>
             </ul>
         </nav>
         <div class="col-12 col-md-4">
             <div class="row g-4">
-                <div class="col-12" id="factoryFilter">
+                <div class="col-12" id="statusFilter">
                     <div class="mb-2"><b>Status</b></div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="factory-1" value="TODO">
-                        <label class="form-check-label" for="status-1">To Do</label>
+                        <input class="form-check-input" type="checkbox" id="status-TODO" value="TODO">
+                        <label class="form-check-label" for="status-TODO">To Do</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="factory-2" value="IN_PROGRESS">
-                        <label class="form-check-label" for="status-2">In Progress</label>
+                        <input class="form-check-input" type="checkbox" id="status-IN_PROGRESS" value="IN_PROGRESS">
+                        <label class="form-check-label" for="status-IN_PROGRESS">In Progress</label>
                     </div>
-
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="factory-3" value="DONE">
-                        <label class="form-check-label" for="status-3">Done</label>
+                        <input class="form-check-input" type="checkbox" id="status-DONE" value="DONE">
+                        <label class="form-check-label" for="status-DONE">Done</label>
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="mb-2"><b>Sort by priority:</b></div>
-
+                    <div class="mb-2"><b>Sort by date created:</b></div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" id="sort-1" value="1" name="radio-sort">
-                        <label class="form-check-label" for="sort-1">HIGH</label>
-                    </div>
-
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" id="sort-2" value="2" name="ra dio-sort">
-                        <label class="form-check-label" for="sort-2">MEDIUM</label>
+                        <input class="form-check-input" type="radio" id="sort-1" value="moi-nhat" name="radio-sort">
+                        <label class="form-check-label" for="sort-1">Latest</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" id="sort-3" value="3" name="radio-sort">
-                        <label class="form-check-label" for="sort-3">LOW</label>
+                        <input class="form-check-input" type="radio" id="sort-2" value="cu-nhat" name="radio-sort">
+                        <label class="form-check-label" for="sort-2">Oldest</label>
                     </div>
-
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" id="sort-4" checked value="nothing"
+                        <input class="form-check-input" type="radio" id="sort-3" checked value="nothing"
                             name="radio-sort">
                         <label class="form-check-label" for="sort-4">Không sắp xếp</label>
                     </div>
-
                 </div>
                 <div class="col-12">
                     <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4"
@@ -161,11 +139,12 @@
             </div>
         </div>
     </div>
-
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
-    <script src="/main.js"></script>
-
+    <script src="/js/main.js"></script>
 </body>
+
+</html>

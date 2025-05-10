@@ -1,11 +1,13 @@
 package com.todo.todoapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,8 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.todo.todoapp.domain.Task;
+import com.todo.todoapp.domain.Task_;
+import com.todo.todoapp.domain.dto.TaskCriteriaDTO;
 import com.todo.todoapp.service.TaskService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,23 +37,41 @@ public class TaskController {
     }
 
     @GetMapping("/task")
-    public String getTaskPage(Model model, @RequestParam("page") Optional<String> pageOptional) {
+    public String getTaskPage(Model model, TaskCriteriaDTO taskCriteriaDTO, HttpServletRequest request) {
         int page = 1;
         try {
-            if (pageOptional.isPresent()) {
-                page = Integer.parseInt(pageOptional.get());
+            if (taskCriteriaDTO.getPage().isPresent()) {
+                page = Integer.parseInt(taskCriteriaDTO.getPage().get());
             } else {
 
             }
+
         } catch (Exception e) {
-            // TODO: handle exception
+
         }
+
         Pageable pageable = PageRequest.of(page - 1, 4);
-        Page<Task> pageTask = this.taskService.getAllTasks(pageable);
-        List<Task> tasks = pageTask.getContent();
+        if (taskCriteriaDTO.getSort() != null && taskCriteriaDTO.getSort().isPresent()) {
+            String sort = taskCriteriaDTO.getSort().get();
+            if (sort.equals("moi-nhat")) {
+                pageable = PageRequest.of(page - 1, 4, Sort.by(Task_.CREATED_DATE).descending());
+            } else if (sort.equals("cu-nhat")) {
+                pageable = PageRequest.of(page - 1, 4, Sort.by(Task_.CREATED_DATE).ascending());
+            } else {
+                pageable = PageRequest.of(page - 1, 4);
+            }
+        }
+
+        Page<Task> pageTask = this.taskService.getAllTasks(pageable, taskCriteriaDTO);
+        List<Task> tasks = pageTask.getContent().size() > 0 ? pageTask.getContent() : new ArrayList<Task>();
+        String qs = request.getQueryString();
+        if (qs != null && !qs.isBlank()) {
+            qs = qs.replace("page=" + page, "");
+        }
         model.addAttribute("tasks", tasks);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pageTask.getTotalPages());
+        model.addAttribute("queryString", qs);
         return "Task/show";
     }
 
